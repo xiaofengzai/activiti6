@@ -3,6 +3,7 @@ package com.yawn.controller;
 import com.yawn.entity.VacTask;
 import com.yawn.entity.Vacation;
 import com.yawn.service.VacationService;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpSession;
 /**
  * @author Created by yawn on 2018-01-08 13:42
  */
+
 @RestController
 public class VacationController {
 
@@ -55,5 +57,7 @@ public class VacationController {
         String userName = (String) session.getAttribute("userName");
         return vacationService.myAuditRecord(userName);
     }
+
+
 
 }

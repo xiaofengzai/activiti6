@@ -1,34 +1,41 @@
-package com.yawn;
+package com.yawn.controller;
 
-import org.activiti.engine.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(classes = ActivitiDemo6SpringbootApplication.class)
-public class ActivitiDemo6SpringbootApplicationTests {
-
+@Api(value="/test1", tags="流程部署接口")
+@RestController
+public class DeployController {
     @Resource
     private ProcessEngineConfiguration configuration;
     @Resource
     private ProcessEngine engine;
 
-	@Test
-	public void contextLoads() {
+    @ApiOperation(value = "部署")
+    @GetMapping("/deploy")
+    public void deploy(){
+        contextLoads();
+        test();
+        test2();
+    }
+    public void contextLoads() {
         configuration.setDatabaseSchemaUpdate("drop-create");
         configuration.buildProcessEngine();
-	}
+    }
 
-	@Test
+
     public void test() {
 //        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         IdentityService is = engine.getIdentityService();
@@ -69,15 +76,13 @@ public class ActivitiDemo6SpringbootApplicationTests {
     }
 
 
-    @Test
     public void test2() {
 //	    / 无用 ： spring自动部署流程文件
 //        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         // 存储服务
         RepositoryService rs = engine.getRepositoryService();
-        Deployment dep = rs.createDeployment().addClasspathResource("classpath:/processes/vacation.bpmn").deploy();
+        Deployment dep = rs.createDeployment().addClasspathResource("processes/vacation.bpmn").deploy();
         ProcessDefinition pd = rs.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
         rs.addCandidateStarterGroup(pd.getId(), "empGroup");
     }
-
 }
